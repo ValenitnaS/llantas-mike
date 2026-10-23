@@ -228,3 +228,53 @@ const anio = document.getElementById("anio");
 if (anio) {
   anio.textContent = new Date().getFullYear();
 }
+
+// ABRIR Y CERRAR FOTOGRAFÍAS
+const visorFotos = document.getElementById("visorFotos");
+const fotoAmpliada = document.getElementById("fotoAmpliada");
+const cerrarFoto = document.querySelector(".visor-cerrar");
+
+if (visorFotos && fotoAmpliada && cerrarFoto) {
+  document.querySelectorAll(".gallery a").forEach((enlace) => {
+    enlace.addEventListener("click", (evento) => {
+      // Conserva la apertura en otra pestaña si se solicita.
+      if (
+        evento.ctrlKey ||
+        evento.metaKey ||
+        evento.shiftKey ||
+        evento.altKey
+      ) {
+        return;
+      }
+
+      evento.preventDefault();
+
+      const imagen = enlace.querySelector("img");
+
+      fotoAmpliada.src = enlace.href;
+      fotoAmpliada.alt = imagen
+        ? imagen.alt
+        : "Fotografía ampliada de Llantas Mike";
+
+      visorFotos.showModal();
+      document.documentElement.classList.add("visor-abierto");
+    });
+  });
+
+  cerrarFoto.addEventListener("click", () => {
+    visorFotos.close();
+  });
+
+  // Cerrar al pulsar en el espacio alrededor de la imagen.
+  visorFotos.addEventListener("click", (evento) => {
+    if (evento.target === visorFotos) {
+      visorFotos.close();
+    }
+  });
+
+  // También se ejecuta al cerrar con la tecla Escape.
+  visorFotos.addEventListener("close", () => {
+    document.documentElement.classList.remove("visor-abierto");
+    fotoAmpliada.removeAttribute("src");
+  });
+}
